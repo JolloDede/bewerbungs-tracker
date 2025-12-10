@@ -1,12 +1,12 @@
 package database
 
 type Firma struct {
-	name string
-	urls string
+	Name string
+	Urls string
 }
 
 func SaveFirmaToDB(firma Firma) error {
-	_, err := DB.Exec("INSERT INTO firma (name, urls) VALUES (?, ?)", firma.name, firma.urls)
+	_, err := DB.Exec("INSERT INTO firma (name, urls) VALUES (?, ?)", firma.Name, firma.Urls)
 
 	if err != nil {
 		return err
@@ -26,7 +26,7 @@ func DeleteFirmaFromDB(id string) error {
 }
 
 func UpdateFirmaDB(id string, firma Firma) error {
-	_, err := DB.Exec("UPDATE firma SET name = ?, urls = ? WHERE id = ?", firma.name, firma.urls, id)
+	_, err := DB.Exec("UPDATE firma SET name = ?, urls = ? WHERE id = ?", firma.Name, firma.Urls, id)
 
 	if err != nil {
 		return err

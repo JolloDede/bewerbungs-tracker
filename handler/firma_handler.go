@@ -4,6 +4,8 @@ import (
 	"html/template"
 	"net/http"
 	"strings"
+
+	"github.com/jollodede/bewerbungs_tol/database"
 )
 
 type FirmaHandler struct {
@@ -38,6 +40,7 @@ func (h FirmaHandler) FirmaAddHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "atleast one url must be supplied", http.StatusBadRequest)
 			return
 		}
+		database.SaveFirmaToDB(database.Firma{Name: name, Urls: urls})
 	case "GET":
 		templates, err := template.ParseFiles("templates/base.html", "templates/firma_form.html")
 
