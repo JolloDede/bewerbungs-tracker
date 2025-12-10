@@ -3,6 +3,7 @@ module github.com/jollodede/bewerbungs_tol
 go 1.25.4
 
 require (
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/ncruces/go-sqlite3 v0.30.3 // indirect
 	github.com/ncruces/julianday v1.0.0 // indirect
 	github.com/tetratelabs/wazero v1.10.1 // indirect

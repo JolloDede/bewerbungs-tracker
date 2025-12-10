@@ -27,5 +27,9 @@ func main() {
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("assets/css"))))
 
 	println("Running on http://localhost:8080")
-	http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(":8080", nil)
+
+	if err != nil {
+		println(err.Error())
+	}
 }

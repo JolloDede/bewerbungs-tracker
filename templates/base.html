@@ -11,17 +11,19 @@
 </head>
 
 <body>
-    <header>
+    <header class="container">
         <nav>
             <ul>
                 <li><a href="/">Home</a></li>
             </ul>
             <ul>
-                <li></li><a href="/firma">Firmen</a>
+                <li><a href="/firma">Firmen</a></li>
             </ul>
         </nav>
     </header>
-    {{template "content" .}}
+    <main class="container">
+        {{template "content" .}}
+    </main>
 </body>
 
 </html>

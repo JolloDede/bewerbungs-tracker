@@ -6,16 +6,14 @@ var DB *sql.DB
 
 func Init() error {
 	var err error
-	DB, err = sql.Open("sqlite3", "file:test.db")
+	DB, err = sql.Open("sqlite3", "file:tmp/test.db")
 	if err != nil {
-		// panic("failed to open db: " + err.Error())
 		return err
 	}
 
 	err = setupTables()
 
 	if err != nil {
-		// panic("Failed to setup db: " + err.Error())
 		return err
 	}
 

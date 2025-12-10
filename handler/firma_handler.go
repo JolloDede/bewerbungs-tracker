@@ -16,13 +16,13 @@ func (h FirmaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	switch path {
 	case "":
-		http.Redirect(w, r, "/home", http.StatusMovedPermanently)
+		h.firmenListHandler(w, r)
 	case "add":
-		h.FirmaAddHandler(w, r)
+		h.firmaAddHandler(w, r)
 	}
 }
 
-func (h FirmaHandler) FirmaAddHandler(w http.ResponseWriter, r *http.Request) {
+func (h FirmaHandler) firmaAddHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
 		err := r.ParseForm()
@@ -40,7 +40,14 @@ func (h FirmaHandler) FirmaAddHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "atleast one url must be supplied", http.StatusBadRequest)
 			return
 		}
-		database.SaveFirmaToDB(database.Firma{Name: name, Urls: urls})
+		err = database.SaveFirmaToDB(database.Firma{Name: name, Urls: urls})
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		http.Redirect(w, r, "/firma", http.StatusFound)
 	case "GET":
 		templates, err := template.ParseFiles("templates/base.html", "templates/firma_form.html")
 
@@ -54,5 +61,33 @@ func (h FirmaHandler) FirmaAddHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+	}
+}
+
+func (h *FirmaHandler) firmenListHandler(w http.ResponseWriter, r *http.Request) {
+	templates, err := template.ParseFiles("templates/base.html", "templates/firma_list.html")
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	firmas, err := database.LoadFirmasDB()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	data := struct {
+		Firmas []database.Firma
+	}{
+		Firmas: firmas,
+	}
+
+	err = templates.ExecuteTemplate(w, "base", data)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

@@ -1,0 +1,10 @@
+{{define "content"}}
+<div>
+    <button onclick="window.location.href = '/firma/add'">Hinzufügen</button>
+    {{range .Firmas}}
+    <article>
+        {{.Name}}
+    </article>
+    {{end}}
+</div>
+{{end}}

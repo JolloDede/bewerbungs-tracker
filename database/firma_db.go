@@ -1,12 +1,17 @@
 package database
 
+import "github.com/google/uuid"
+
 type Firma struct {
-	Name string
-	Urls string
+	id         string
+	Name       string
+	Urls       string
+	Created_at string
 }
 
 func SaveFirmaToDB(firma Firma) error {
-	_, err := DB.Exec("INSERT INTO firma (name, urls) VALUES (?, ?)", firma.Name, firma.Urls)
+	firma.id = uuid.NewString()
+	_, err := DB.Exec("INSERT INTO firma (id, name, urls, created_at) VALUES (?, ?, ?, DATE())", firma.id, firma.Name, firma.Urls)
 
 	if err != nil {
 		return err
@@ -33,4 +38,23 @@ func UpdateFirmaDB(id string, firma Firma) error {
 	}
 
 	return nil
+}
+
+func LoadFirmasDB() ([]Firma, error) {
+	rows, err := DB.Query("SELECT * FROM firma")
+
+	if err != nil {
+		return nil, err
+	}
+	firmas := make([]Firma, 0)
+
+	for rows.Next() {
+		var f Firma
+		if err := rows.Scan(&f.id, &f.Name, &f.Urls, &f.Created_at); err != nil {
+			return nil, err
+		}
+		firmas = append(firmas, f)
+	}
+
+	return firmas, nil
 }
