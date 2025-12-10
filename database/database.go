@@ -2,17 +2,17 @@ package database
 
 import "database/sql"
 
-var Db *sql.DB
+var DB *sql.DB
 
-func InitDb() error {
+func Init() error {
 	var err error
-	Db, err = sql.Open("sqlite3", "file:test.db")
+	DB, err = sql.Open("sqlite3", "file:test.db")
 	if err != nil {
 		// panic("failed to open db: " + err.Error())
 		return err
 	}
 
-	err = setupDb()
+	err = setupTables()
 
 	if err != nil {
 		// panic("Failed to setup db: " + err.Error())
@@ -23,5 +23,26 @@ func InitDb() error {
 }
 
 func setupTables() error {
+	_, err := DB.Exec(`
+	DROP TABLE IF EXISTS firma;
+	CREATE TABLE firma (
+		id			TEXT PRIMARY KEY, -- UUID
+		name		TEXT NOT NULL,	
+		urls		TEXT,
+		created_at	TEXT NOT NULL
+	);	
 
+	DROP TABLE IF EXISTS contact;
+	CREATE TABLE contact (
+		id			INTEGER PRIMARY KEY AUTOINCREMENT,
+		date		TEXT NOT NULL, 
+		type		TEXT NOT NULL
+	);
+	`)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
