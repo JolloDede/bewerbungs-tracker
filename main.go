@@ -22,7 +22,7 @@ func main() {
 
 	http.HandleFunc("/", handler.IndexHandler)
 	http.Handle("/firma/", handler.FirmaHandler{})
-	http.HandleFunc("/contact/add", handler.ContactHandler)
+	http.Handle("/contact/", handler.Contacthandler{})
 
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("assets/css"))))
 

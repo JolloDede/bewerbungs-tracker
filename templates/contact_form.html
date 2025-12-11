@@ -1,0 +1,18 @@
+{{define "content"}}
+<form action="" method="post">
+    <fieldset><label for="firma">Firma:</label>
+        <select name="firma" id="firma">
+            {{range .Firmas}}
+            <option value={{.Id}}>{{.Name}}</option>
+            {{end}}
+        </select>
+    </fieldset>
+    <fieldset><label for="type">Typ</label>
+        <select name="typ" id="typ">
+            {{range .Types}}
+            <option value={{.Key}}>{{.Value}}</option>
+            {{end}}
+        </select>
+    </fieldset>
+</form>
+{{end}}

@@ -34,7 +34,9 @@ func setupTables() error {
 	CREATE TABLE contact (
 		id			INTEGER PRIMARY KEY AUTOINCREMENT,
 		date		TEXT NOT NULL, 
-		type		TEXT NOT NULL
+		type		TEXT NOT NULL,
+		fk_firma	TEXT NOT NULL,
+		FOREIGN KEY(fk_firma) REFERENCES firma(id)
 	);
 	`)
 
