@@ -22,8 +22,8 @@ func Init() error {
 
 func setupTables() error {
 	_, err := DB.Exec(`
-	DROP TABLE IF EXISTS firma;
 	DROP TABLE IF EXISTS contact;
+	DROP TABLE IF EXISTS firma;
 	`)
 
 	if err != nil {

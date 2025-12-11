@@ -1,5 +1,7 @@
 package database
 
+import "time"
+
 type KeyValue struct {
 	Key   int
 	Value string
@@ -87,6 +89,12 @@ func GetLatestContactByFirma() ([]LatestContact, error) {
 		if err := rows.Scan(&c.id, &c.Firma, &c.Date, &c.Status); err != nil {
 			return nil, err
 		}
+		tempDate, err := time.Parse(time.RFC3339, c.Date)
+		if err != nil {
+			return nil, err
+		}
+		c.Date = tempDate.Format("15:04 02.01.06")
+
 		contacts = append(contacts, c)
 	}
 
