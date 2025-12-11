@@ -23,6 +23,14 @@ func Init() error {
 func setupTables() error {
 	_, err := DB.Exec(`
 	DROP TABLE IF EXISTS firma;
+	DROP TABLE IF EXISTS contact;
+	`)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = DB.Exec(`
 	CREATE TABLE firma (
 		id			TEXT PRIMARY KEY, -- UUID
 		name		TEXT NOT NULL,	
@@ -30,7 +38,6 @@ func setupTables() error {
 		created_at	TEXT NOT NULL
 	);	
 
-	DROP TABLE IF EXISTS contact;
 	CREATE TABLE contact (
 		id			INTEGER PRIMARY KEY AUTOINCREMENT,
 		date		TEXT NOT NULL, 

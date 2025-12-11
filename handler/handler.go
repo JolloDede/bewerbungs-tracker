@@ -3,6 +3,8 @@ package handler
 import (
 	"html/template"
 	"net/http"
+
+	"github.com/jollodede/bewerbungs_tol/database"
 )
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
@@ -13,13 +15,22 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = templates.ExecuteTemplate(w, "base", nil)
+	contacts, err := database.GetLatestContactByFirma()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	data := struct {
+		Contacts []database.LatestContact
+	}{
+		Contacts: contacts,
+	}
+
+	err = templates.ExecuteTemplate(w, "base", data)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-}
-
-func ContactHandler(w http.ResponseWriter, r *http.Request) {
-
 }

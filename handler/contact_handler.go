@@ -3,7 +3,9 @@ package handler
 import (
 	"html/template"
 	"net/http"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jollodede/bewerbungs_tol/database"
 )
@@ -29,17 +31,21 @@ func (h *Contacthandler) contactAddHandler(w http.ResponseWriter, r *http.Reques
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		name := r.FormValue("")
-		if name == "" {
-			http.Error(w, "Name must be present", http.StatusBadRequest)
+		firma := r.FormValue("firma")
+		if firma == "" {
+			http.Error(w, "Firma must be present", http.StatusBadRequest)
 			return
 		}
-		urls := r.FormValue("urls")
-		if urls == "" {
-			http.Error(w, "atleast one url must be supplied", http.StatusBadRequest)
+		typ := r.FormValue("typ")
+		if typ == "" {
+			http.Error(w, "Typ must be supplied", http.StatusBadRequest)
 			return
 		}
-		err = database.SaveFirmaToDB(database.Firma{Name: name, Urls: urls})
+		typId, err := strconv.Atoi(typ)
+		if err != nil {
+			http.Error(w, "Failed to convert typ to int", http.StatusBadRequest)
+		}
+		err = database.SaveContactDB(database.Contact{Firma: firma, ContactType: database.ContactType(typId), Date: time.Now().Format(time.RFC3339)})
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

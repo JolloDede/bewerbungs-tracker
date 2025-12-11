@@ -1,4 +1,21 @@
 {{define "content"}}
-<h1>Index</h1>
-<button onclick="window.location.href = '/contact/add'">Kontakt hinzufügen</button>
+<h1>Todos</h1>
+<table>
+    <thead>
+        <tr>
+            <th scope="col">Firma</th>
+            <th scope="col">Datum</th>
+            <th scope="col">Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{range .Contacts}}
+            <tr>
+                <th scope="row">{{.Firma}}</th>
+                <td>{{.Date}}</td>
+                <td>{{.Status}}</td>
+            </tr>
+        {{end}}
+    </tbody>
+</table>
 {{end}}
