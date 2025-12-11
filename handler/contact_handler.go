@@ -17,7 +17,7 @@ func (h Contacthandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	switch path {
 	case "":
-		h.contactListHandler(w, r)
+		// h.contactListHandler(w, r)
 	case "add":
 		h.contactAddHandler(w, r)
 	}
@@ -84,6 +84,6 @@ func (h *Contacthandler) contactAddHandler(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-func (h *Contacthandler) contactListHandler(w http.ResponseWriter, r *http.Request) {
+// func (h *Contacthandler) contactListHandler(w http.ResponseWriter, r *http.Request) {
 
-}
+// }
