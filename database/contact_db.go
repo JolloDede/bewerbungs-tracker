@@ -1,6 +1,10 @@
 package database
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type KeyValue struct {
 	Key   int
@@ -38,13 +42,15 @@ func ContactTypeList() []KeyValue {
 }
 
 type Contact struct {
+	Id          string
 	Firma       string
 	Date        string
 	ContactType ContactType
 }
 
 func SaveContactDB(contact Contact) error {
-	_, err := DB.Exec("INSERT INTO contact (fk_firma, date, type) VALUES (?, ?, ?)", contact.Firma, contact.Date, contactTypeName[contact.ContactType])
+	contact.Id = uuid.NewString()
+	_, err := DB.Exec("INSERT INTO contact (id, fk_firma, date, type) VALUES (?, ?, ?, ?)", contact.Id, contact.Firma, contact.Date, contactTypeName[contact.ContactType])
 
 	if err != nil {
 		return err
@@ -63,14 +69,40 @@ func UpdateContactDB(id string, contact Contact) error {
 	return nil
 }
 
-type LatestContact struct {
-	id     string
+func ContactList() ([]DisplayContact, error) {
+	rows, err := DB.Query("SELECT c.id, c.date, c.type, f.Name FROM contact c INNER JOIN firma f ON f.id = c.fk_firma")
+
+	if err != nil {
+		return nil, err
+	}
+
+	contacts := make([]DisplayContact, 0)
+
+	for rows.Next() {
+		var c DisplayContact
+		if err := rows.Scan(&c.Id, &c.Date, &c.Status, &c.Firma); err != nil {
+			return nil, err
+		}
+		tempDate, err := time.Parse(time.RFC3339, c.Date)
+		if err != nil {
+			return nil, err
+		}
+		c.Date = tempDate.Format("15:04 02.01.06")
+
+		contacts = append(contacts, c)
+	}
+
+	return contacts, nil
+}
+
+type DisplayContact struct {
+	Id     string
 	Firma  string
 	Date   string
 	Status string
 }
 
-func GetLatestContactByFirma() ([]LatestContact, error) {
+func GetLatestContactByFirma() ([]DisplayContact, error) {
 	rows, err := DB.Query(`
 	SELECT f.id, f.name, c.date, c.type FROM firma f LEFT JOIN (
 		SELECT fk_firma, MAX(date) as max_date FROM contact GROUP BY fk_firma	
@@ -83,11 +115,11 @@ func GetLatestContactByFirma() ([]LatestContact, error) {
 		return nil, err
 	}
 
-	contacts := make([]LatestContact, 0)
+	contacts := make([]DisplayContact, 0)
 
 	for rows.Next() {
-		var c LatestContact
-		if err := rows.Scan(&c.id, &c.Firma, &c.Date, &c.Status); err != nil {
+		var c DisplayContact
+		if err := rows.Scan(&c.Id, &c.Firma, &c.Date, &c.Status); err != nil {
 			return nil, err
 		}
 		tempDate, err := time.Parse(time.RFC3339, c.Date)

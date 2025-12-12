@@ -32,14 +32,14 @@ func setupTables() error {
 
 	_, err = DB.Exec(`
 	CREATE TABLE firma (
-		id			TEXT PRIMARY KEY, -- UUID
+		id			TEXT PRIMARY KEY NOT NULL, -- UUID
 		name		TEXT NOT NULL,	
 		urls		TEXT,
 		created_at	TEXT NOT NULL
 	);	
 
 	CREATE TABLE contact (
-		id			INTEGER PRIMARY KEY AUTOINCREMENT,
+		id			TEXT PRIMARY KEY NOT NULL, -- UUID
 		date		TEXT NOT NULL, 
 		type		TEXT NOT NULL,
 		fk_firma	TEXT NOT NULL,

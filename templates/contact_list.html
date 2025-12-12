@@ -1,0 +1,11 @@
+{{define "content"}}
+<div>
+    {{range .Contacts}}
+        <article>
+            <h2>{{.Status}}</h2>
+            <p>{{.Date}}</p>
+            <p>{{.Firma}}</p>
+        </article>
+    {{end}}
+</div>
+{{end}}

@@ -23,7 +23,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		Contacts []database.LatestContact
+		Contacts []database.DisplayContact
 	}{
 		Contacts: contacts,
 	}

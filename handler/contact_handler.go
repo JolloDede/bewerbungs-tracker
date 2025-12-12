@@ -17,7 +17,7 @@ func (h Contacthandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	switch path {
 	case "":
-		// h.contactListHandler(w, r)
+		h.contactListHandler(w, r)
 	case "add":
 		h.contactAddHandler(w, r)
 	}
@@ -84,6 +84,34 @@ func (h *Contacthandler) contactAddHandler(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-// func (h *Contacthandler) contactListHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Contacthandler) contactListHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		templates, err := template.ParseFiles("templates/base.html", "templates/contact_list.html")
 
-// }
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		contacts, err := database.ContactList()
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		data := struct {
+			Contacts []database.DisplayContact
+		}{
+			Contacts: contacts,
+		}
+
+		err = templates.ExecuteTemplate(w, "base", data)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	case "DELETE":
+	}
+}
