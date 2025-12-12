@@ -70,7 +70,7 @@ func UpdateContactDB(id string, contact Contact) error {
 }
 
 func ContactList() ([]DisplayContact, error) {
-	rows, err := DB.Query("SELECT c.id, c.date, c.type, f.Name FROM contact c INNER JOIN firma f ON f.id = c.fk_firma")
+	rows, err := DB.Query("SELECT c.id, c.date, c.type, f.Name FROM contact c INNER JOIN firma f ON f.id = c.fk_firma ORDER BY f.name, c.date")
 
 	if err != nil {
 		return nil, err

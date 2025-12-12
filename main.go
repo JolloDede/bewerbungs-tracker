@@ -25,6 +25,7 @@ func main() {
 	http.Handle("/contact/", handler.Contacthandler{})
 
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("assets/css"))))
+	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("assets/js"))))
 
 	println("Running on http://localhost:8080")
 	err := http.ListenAndServe(":8080", nil)

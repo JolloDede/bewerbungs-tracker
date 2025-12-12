@@ -113,5 +113,6 @@ func (h *Contacthandler) contactListHandler(w http.ResponseWriter, r *http.Reque
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	case "DELETE":
+		println("AHa")
 	}
 }

@@ -15,16 +15,20 @@
         <nav>
             <ul>
                 <li><a href="/">Home</a></li>
+                <li><a href="/firma">Firmen</a></li>
+                <li><a href="/contact">Kontakte</a></li>
             </ul>
             <ul>
-                <li><a href="/firma">Firmen</a></li>
                 <li><button onclick="window.location.href='/contact/add'">Kontakt hinzufügen</button></li>
+                <li><button onclick="window.location.href='/firma/add'">Firma hinzufügen</button></li>
             </ul>
         </nav>
     </header>
     <main class="container">
         {{template "content" .}}
     </main>
+
+    <script src="/js/htmx-2.0.8.min.js"></script>
 </body>
 
 </html>
