@@ -80,7 +80,7 @@ func GetLatestContactByFirma() ([]DisplayContact, error) {
 	SELECT f.id, f.name, c.date, c.type FROM firma f LEFT JOIN (
 		SELECT fk_firma, MAX(date) as max_date FROM contact GROUP BY fk_firma	
 	) latest_contact ON f.id = latest_contact.fk_firma
-	 LEFT JOIN contact c ON c.fk_firma = latest_contact.fk_firma AND c.date = latest_contact.max_date
+	 INNER JOIN contact c ON c.fk_firma = latest_contact.fk_firma AND c.date = latest_contact.max_date
 	 ORDER BY c.date ASC;
 	`)
 
