@@ -47,7 +47,7 @@ func (h *Contacthandler) contactAddHandler(w http.ResponseWriter, r *http.Reques
 		if err != nil {
 			http.Error(w, "Failed to convert typ to int", http.StatusBadRequest)
 		}
-		err = database.SaveContactDB(database.Contact{Firma: firma, ContactType: database.ContactType(typId), Date: time.Now().Format(time.RFC3339)})
+		err = database.SaveContactDB(database.NewContact(firma, time.Now(), database.ContactType(typId)))
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -9,15 +9,15 @@ type Firma struct {
 	Created_at string
 }
 
-func SaveFirmaToDB(firma Firma) error {
+func SaveFirmaToDB(firma Firma) (string, error) {
 	firma.Id = uuid.NewString()
 	_, err := DB.Exec("INSERT INTO firma (id, name, urls, created_at) VALUES (?, ?, ?, DATE())", firma.Id, firma.Name, firma.Urls)
 
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return firma.Id, nil
 }
 
 func DeleteFirmaFromDB(id string) error {

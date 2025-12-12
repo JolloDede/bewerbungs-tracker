@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/jollodede/bewerbungs_tol/database"
 )
@@ -40,7 +41,14 @@ func (h FirmaHandler) firmaAddHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "atleast one url must be supplied", http.StatusBadRequest)
 			return
 		}
-		err = database.SaveFirmaToDB(database.Firma{Name: name, Urls: urls})
+		id, err := database.SaveFirmaToDB(database.Firma{Name: name, Urls: urls})
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		err = database.SaveContactDB(database.NewContact(id, time.Now(), database.Erfasst))
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
