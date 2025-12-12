@@ -20,6 +20,8 @@ func (h Contacthandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		h.contactListHandler(w, r)
 	case "add":
 		h.contactAddHandler(w, r)
+	default:
+		h.contactDeleteHandler(w, r)
 	}
 }
 
@@ -112,7 +114,22 @@ func (h *Contacthandler) contactListHandler(w http.ResponseWriter, r *http.Reque
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+	}
+}
+
+func (h *Contacthandler) contactDeleteHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
 	case "DELETE":
-		println("AHa")
+		fullPath := strings.Split(r.URL.Path, "/")
+		id := fullPath[len(fullPath)-1]
+
+		err := database.DeleteContactFromDB(id)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
 	}
 }

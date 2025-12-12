@@ -69,6 +69,16 @@ func UpdateContactDB(id string, contact Contact) error {
 	return nil
 }
 
+func DeleteContactFromDB(id string) error {
+	_, err := DB.Exec("DELETE FROM contact WHERE id = ?", id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func ContactList() ([]DisplayContact, error) {
 	rows, err := DB.Query("SELECT c.id, c.date, c.type, f.Name FROM contact c INNER JOIN firma f ON f.id = c.fk_firma ORDER BY f.name, c.date")
 

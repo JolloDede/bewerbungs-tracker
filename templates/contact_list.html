@@ -6,7 +6,7 @@
             <h2>{{.Firma}}</h2>
             <p>{{.Date}}</p>
             <h3 style="margin-top: 0;">{{.Status}}</h3>
-            <button class="contrast" style="background-color: red;" hx-delete="" hx-trigger="click" hx-swap="delete" hx-target="closest article">Delete</button>
+            <button class="contrast" style="background-color: red;" hx-delete={{.Id}} hx-trigger="click" hx-swap="delete" hx-target="closest article">Delete</button>
         </div>
     </article>
     {{end}}
