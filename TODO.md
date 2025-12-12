@@ -1,5 +1,5 @@
 # Todo
 
 - [X] contact list with delete button
-- [ ] firma erstellt automatisch contact erstellt
-- [ ] Option für contact type erscheint immer gleich
+- [X] firma erstellt automatisch contact erstellt
+- [X] Option für contact type erscheint immer gleich

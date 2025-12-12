@@ -1,6 +1,9 @@
 package database
 
-import "time"
+import (
+	"sort"
+	"time"
+)
 
 type Contact struct {
 	Id          string
@@ -19,14 +22,16 @@ const (
 	Erfasst ContactType = iota
 	Bewerbung
 	Nachfrage
+	Vorstellungsgespräch
 	Absage
 )
 
 var contactTypeName = map[ContactType]string{
-	Erfasst:   "erfasst",
-	Bewerbung: "bewerbung",
-	Nachfrage: "nachfrage",
-	Absage:    "absage",
+	Erfasst:              "erfasst",
+	Bewerbung:            "bewerbung",
+	Nachfrage:            "nachfrage",
+	Vorstellungsgespräch: "vorstellungsgespräch",
+	Absage:               "absage",
 }
 
 func (ct ContactType) String() string {
@@ -39,6 +44,8 @@ func ContactTypeList() []KeyValue {
 	for id, name := range contactTypeName {
 		list = append(list, KeyValue{Key: int(id), Value: name})
 	}
+
+	sort.Slice(list, func(i, j int) bool { return list[i].Key < list[j].Key })
 
 	return list
 }
