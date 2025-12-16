@@ -68,11 +68,32 @@ func ContactList() ([]DisplayContact, error) {
 	return contacts, nil
 }
 
+type ContactAge int
+
+const (
+	New ContactAge = iota
+	Medium
+	Old
+)
+
+func calcAge(birth time.Time) ContactAge {
+	days := time.Until(birth) / (24 * time.Hour)
+
+	switch {
+	case days >= 14:
+		return Old
+	case days >= 7:
+		return Medium
+	}
+	return New
+}
+
 type DisplayContact struct {
 	Id     string
 	Firma  string
 	Date   string
 	Status string
+	Age    ContactAge
 }
 
 func GetLatestContactByFirma() ([]DisplayContact, error) {
@@ -81,6 +102,7 @@ func GetLatestContactByFirma() ([]DisplayContact, error) {
 		SELECT fk_firma, MAX(date) as max_date FROM contact GROUP BY fk_firma	
 	) latest_contact ON f.id = latest_contact.fk_firma
 	 INNER JOIN contact c ON c.fk_firma = latest_contact.fk_firma AND c.date = latest_contact.max_date
+	 WHERE c.Type != 'absage'
 	 ORDER BY c.date ASC;
 	`)
 
@@ -99,6 +121,7 @@ func GetLatestContactByFirma() ([]DisplayContact, error) {
 		if err != nil {
 			return nil, err
 		}
+		c.Age = calcAge(tempDate)
 		c.Date = tempDate.Format("15:04 02.01.06")
 
 		contacts = append(contacts, c)

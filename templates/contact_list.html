@@ -1,7 +1,7 @@
 {{define "content"}}
 <div>
     {{range .Contacts}}
-    <article>
+    <article {{if (eq .Age 2)}}style="background-color: red;"{{else}}{{if (eq .Age 1)}}style="background-color: yellow;"{{end}}{{end}}>
         <div class="grid">
             <h2>{{.Firma}}</h2>
             <p>{{.Date}}</p>

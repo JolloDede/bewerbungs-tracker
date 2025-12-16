@@ -24,6 +24,7 @@
             pkgs.go
             pkgs.gopls
             pkgs.air
+            pkgs.sqlite
           ];
         };
       }
