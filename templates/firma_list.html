@@ -1,10 +1,13 @@
 {{define "content"}}
 <div>
     {{range .Firmas}}
-    <details>
-        <summary role="button" class="outline">{{.Name}}</summary>
-        <p>{{.Text}}</p>
-    </details>
+    <article>
+        <details>
+            <summary role="button" class="outline">{{.Name}}</summary>
+            <p>{{.Text}}</p>
+            <button onclick="window.location.href = '/firma/{{.Id}}'">Edit</button>
+        </details>
+    </article>
     {{end}}
 </div>
 {{end}}

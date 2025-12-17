@@ -31,8 +31,8 @@ func DeleteFirmaFromDB(id string) error {
 	return nil
 }
 
-func UpdateFirmaDB(id string, firma Firma) error {
-	_, err := DB.Exec("UPDATE firma SET name = ?, urls = ? WHERE id = ?", firma.Name, firma.Urls, id)
+func UpdateFirma(id string, firma Firma) error {
+	_, err := DB.Exec("UPDATE firma SET name = ?, urls = ?, text = ? WHERE id = ?", firma.Name, firma.Urls, firma.Text, id)
 
 	if err != nil {
 		return err
@@ -58,4 +58,21 @@ func LoadFirmasDB() ([]Firma, error) {
 	}
 
 	return firmas, nil
+}
+
+func LoadFirma(id string) (Firma, error) {
+	rows, err := DB.Query("SELECT * FROM firma WHERE id = ?", id)
+
+	if err != nil {
+		return Firma{}, err
+	}
+	var firma Firma
+
+	for rows.Next() {
+		if err := rows.Scan(&firma.Id, &firma.Name, &firma.Urls, &firma.Text, &firma.Created_at); err != nil {
+			return Firma{}, err
+		}
+	}
+
+	return firma, nil
 }
