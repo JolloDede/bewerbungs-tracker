@@ -37,11 +37,8 @@ func (h FirmaHandler) firmaAddHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		urls := r.FormValue("urls")
-		if urls == "" {
-			http.Error(w, "atleast one url must be supplied", http.StatusBadRequest)
-			return
-		}
-		id, err := database.SaveFirmaToDB(database.Firma{Name: name, Urls: urls})
+		text := r.FormValue("text")
+		id, err := database.SaveFirmaToDB(database.Firma{Name: name, Urls: urls, Text: text})
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

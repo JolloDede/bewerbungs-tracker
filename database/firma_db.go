@@ -6,12 +6,13 @@ type Firma struct {
 	Id         string
 	Name       string
 	Urls       string
+	Text       string
 	Created_at string
 }
 
 func SaveFirmaToDB(firma Firma) (string, error) {
 	firma.Id = uuid.NewString()
-	_, err := DB.Exec("INSERT INTO firma (id, name, urls, created_at) VALUES (?, ?, ?, DATE())", firma.Id, firma.Name, firma.Urls)
+	_, err := DB.Exec("INSERT INTO firma (id, name, urls, text, created_at) VALUES (?, ?, ?, ?, DATE())", firma.Id, firma.Name, firma.Urls, firma.Text)
 
 	if err != nil {
 		return "", err
@@ -50,7 +51,7 @@ func LoadFirmasDB() ([]Firma, error) {
 
 	for rows.Next() {
 		var f Firma
-		if err := rows.Scan(&f.Id, &f.Name, &f.Urls, &f.Created_at); err != nil {
+		if err := rows.Scan(&f.Id, &f.Name, &f.Urls, &f.Text, &f.Created_at); err != nil {
 			return nil, err
 		}
 		firmas = append(firmas, f)

@@ -47,6 +47,7 @@ func setupTables() error {
 		id			TEXT PRIMARY KEY NOT NULL, -- UUID
 		name		TEXT NOT NULL,
 		urls		TEXT,
+		text		TEXT,
 		created_at	TEXT NOT NULL
 	);
 
