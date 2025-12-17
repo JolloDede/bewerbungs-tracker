@@ -1,9 +1,10 @@
 {{define "content"}}
 <div>
     {{range .Firmas}}
-    <article>
-        {{.Name}}
-    </article>
+    <details>
+        <summary role="button" class="outline">{{.Name}}</summary>
+        <p>{{.Text}}</p>
+    </details>
     {{end}}
 </div>
 {{end}}
