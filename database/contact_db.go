@@ -80,9 +80,9 @@ func calcAge(birth time.Time) ContactAge {
 	days := time.Until(birth) / (24 * time.Hour)
 
 	switch {
-	case days >= 14:
+	case days <= -14:
 		return Old
-	case days >= 7:
+	case days <= -7:
 		return Medium
 	}
 	return New

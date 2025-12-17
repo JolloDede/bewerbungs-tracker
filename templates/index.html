@@ -10,11 +10,11 @@
     </thead>
     <tbody>
         {{range .Contacts}}
-            <tr>
-                <th scope="row">{{.Firma}}</th>
-                <td>{{.Date}}</td>
-                <td>{{.Status}}</td>
-            </tr>
+        <tr >
+            <th scope="row">{{.Firma}}</th>
+            <td {{if (eq .Age 2)}}style="background-color: red;" {{else}}{{if (eq .Age 1)}}style="background-color: yellow;"{{end}}{{end}}>{{.Date}}</td>
+            <td>{{.Status}}</td>
+        </tr>
         {{end}}
     </tbody>
 </table>

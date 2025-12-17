@@ -1,5 +1,5 @@
 # Todo
 
-- [X] contact list with delete button
-- [X] firma erstellt automatisch contact erstellt
-- [X] Option für contact type erscheint immer gleich
+- [ ] firma also has text
+- [ ] urls can be empty
+- [X] make the style apply to the html element
