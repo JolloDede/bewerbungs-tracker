@@ -124,7 +124,6 @@ func (h *FirmaHandler) firmaEditHandler(w http.ResponseWriter, r *http.Request) 
 		}{
 			Firma: firma,
 		}
-		println(firma.Name)
 
 		err = templates.ExecuteTemplate(w, "base", data)
 
