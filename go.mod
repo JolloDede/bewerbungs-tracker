@@ -1,4 +1,4 @@
-module github.com/jollodede/bewerbungs_tol
+module github.com/jollodede/bewerbungs-tracker
 
 go 1.25.4
 
