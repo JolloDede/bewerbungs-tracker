@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 
-	"github.com/jollodede/bewerbungs_tol/database"
-	"github.com/jollodede/bewerbungs_tol/handler"
+	"github.com/jollodede/bewerbungs-tracker/database"
+	"github.com/jollodede/bewerbungs-tracker/handler"
 	_ "github.com/ncruces/go-sqlite3/driver"
 	_ "github.com/ncruces/go-sqlite3/embed"
 )

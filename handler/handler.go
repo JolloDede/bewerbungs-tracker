@@ -4,7 +4,7 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/jollodede/bewerbungs_tol/database"
+	"github.com/jollodede/bewerbungs-tracker/database"
 )
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {

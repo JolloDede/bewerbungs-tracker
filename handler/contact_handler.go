@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jollodede/bewerbungs_tol/database"
+	"github.com/jollodede/bewerbungs-tracker/database"
 )
 
 type Contacthandler struct{}
