@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Firma neu{% endblock %}
+
+{% block content %}
+<form method="post">
+    <h2>
+        {% match firma %}
+            {% when Some with (val) %}
+                Firma {{ val.name }} verändern
+            {% when None %}
+                Neue Firma erfassen
+        {% endmatch %}
+    </h2>
+    <label>
+        <span>Firmenname:</span>
+        <input autofocus type="text" name="name" id="name"
+            {% match firma %}
+                {% when Some with (val) %}
+                    value={{ val.name }}
+                {% when None %}
+            {% endmatch %}
+    </label>
+    <label>
+        <span>Text:</span>
+        <textarea name="text" id="text">
+            {% match firma %}
+                {% when Some with (val) %}
+                    value={{ val.text }}
+                {% when None %}
+            {% endmatch %}
+        </textarea>
+    </label>
+    <label>
+        <span>Urls:</span>
+        <textarea name="urls" id="urls">
+            {% match firma %}
+                {% when Some with (val) %}
+                    value={{ val.urls }}
+                {% when None %}
+            {% endmatch %}
+        </textarea>
+    </label>
+
+    <button type="submit">Speichern</button>
+</form>
+{% endblock %}

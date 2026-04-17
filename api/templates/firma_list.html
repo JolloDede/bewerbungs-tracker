@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Firma neu{% endblock %}
+
+{% block content %}
+<div>
+    {% for firma in firmas %}
+    <article>
+        <details>
+            <summary role="button" class="outline">{{ firma.name }}</summary>
+            <p>{{ firma.text }}</p>
+            <button onclick="window.location.href = '/firma/{{ firma.id }}'">Edit</button>
+        </details>
+    </article>
+    {% endfor %}
+</div>
+{% endblock %}

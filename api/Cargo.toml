@@ -1,0 +1,22 @@
+[package]
+name = "bewerbungs_tool_api"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+entity             = { path = "../entity" }
+migration          = { path = "../migration" }
+
+askama = "0.15.6"
+axum = "0.8.8"
+tokio = { version = "1.51.1", features = ["macros", "rt-multi-thread"] }
+anyhow = "1.0.102"
+tracing-subscriber = "0.3.23"
+sqlx = { version = "0.8.6", features = ["runtime-tokio", "sqlite"]}
+tower-http = {version = "0.6.8", features = ["fs"]}
+sea-orm = "1.1.20"
+chrono = "0.4.44"
+serde = { version = "1.0.228", features = ["derive"] }
+uuid = {version = "1.23.1", features = ["v7"] }
+strum = "0.28.0"
+strum_macros = "0.28.0"

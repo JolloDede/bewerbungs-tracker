@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="color-scheme" content="light dark" />
+        <!--<link rel="stylesheet" href="/css/pico.min.css" />-->
+        <title>{% block title %}{{ title }}{% endblock %}}</title>
+        {% block head %}{% endblock %}
+    </head>
+
+    <body>
+        <header class="container">
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/firmas">Firmen</a></li>
+                    <li><a href="/contacts">Kontakte</a></li>
+                </ul>
+                <ul>
+                    <li>
+                        <button onclick="window.location.href = '/contact/add'">
+                            Kontakt hinzufügen
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="window.location.href = '/firma/add'">
+                            Firma hinzufügen
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <main id="container">{% block content %}{% endblock %}</main>
+
+        <script src="/assets/js/htmx-2.0.8.min.js"></script>
+    </body>
+</html>
