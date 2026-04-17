@@ -54,12 +54,35 @@
             cargoLock.lockFile = ./Cargo.lock;
           };
 
+          # Image for x86-64
           dockerImage = pkgs.dockerTools.buildImage {
             name = "bewerbungs_tool";
             tag = "latest";
             copyToRoot = pkgs.buildEnv {
               name = "image-root";
               paths = [ app ];
+              pathsToLink = [ "/bin" ];
+            };
+            config = {
+              Cmd = [ "/bin/bewerbungs_tool" ];
+              WorkingDir = "/";
+            };
+          };
+
+          appAarch64 = pkgs.pkgsCross.aarch64-multiplatform.rustPlatform.buildRustPackage {
+            pname = "bewerbungs_tool";
+            version = "0.1.0";
+            src = ./.;
+            cargoLock.lockFile = ./Cargo.lock;
+          };
+
+          # Image for the Raspberrypi
+          dockerImageAarch64 = pkgs.dockerTools.buildImage {
+            name = "bewerbungs_tool";
+            tag = "arm64-v8";
+            copyToRoot = pkgs.buildEnv {
+              name = "image-root";
+              paths = [ appAarch64 ];
               pathsToLink = [ "/bin" ];
             };
             config = {
