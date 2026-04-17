@@ -6,6 +6,7 @@ use axum::{
     response::Html,
     routing::{get, post},
 };
+use migration::{Migrator, MigratorTrait};
 use sea_orm::{ConnectOptions, Database, DatabaseConnection};
 use sqlx::{Connection, Pool, Sqlite, SqliteConnection, SqlitePool};
 use tower_http::services::ServeDir;
@@ -27,6 +28,8 @@ async fn start() -> anyhow::Result<()> {
 
     let opt = ConnectOptions::new(&db_connection_str);
     let db = Database::connect(opt).await?;
+
+    Migrator::up(&db, None).await?;
 
     let app_state = AppState { db: db };
 

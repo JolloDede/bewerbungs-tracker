@@ -1,0 +1,10 @@
+[package]
+name = "bewerbungs_tool"
+version = "0.1.0"
+edition = "2024"
+
+[workspace]
+members = [".", "api",    "entity",    "migration"]
+
+[dependencies]
+bewerbungs_tool_api = { path = "api" }
