@@ -42,7 +42,7 @@ async fn start() -> anyhow::Result<()> {
         .route("/firma/add", get(get_firma_form).post(post_firma))
         .route("/contacts", get(get_contact_list))
         .route("/contact/add", get(get_contact_form).post(post_contact))
-        .nest_service("/assets", ServeDir::new(assets))
+        .nest_service("/assets/", ServeDir::new(assets))
         .with_state(app_state);
 
     println!("Running on: http://localhost:3000");

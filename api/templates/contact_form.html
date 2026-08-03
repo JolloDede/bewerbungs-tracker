@@ -12,8 +12,8 @@
             {% endfor %}
         </select>
     </label>
-    <label for="type">
-        <span>Typ</span>
+    <label>
+        <span>Typ:</span>
         <select name="typ" id="typ">
             {% for typ in types %}
             <option value={{ typ.key }}>{{ typ.value }}</option>
