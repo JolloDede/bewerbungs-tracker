@@ -5,12 +5,14 @@
 {% block content %}
 <div>
     {% for contact in contacts %}
-    <article>
-        <div class="grid">
+    <article class="firma">
+        <div>
             <h2>{{ contact.firma }}</h2>
             <p>{{ contact.date }}</p>
             <h3 style="margin-top: 0;">{{ contact.status }}</h3>
-            <button class="contrast" style="background-color: red;" hx-delete={{ contact.id }} hx-trigger="click" hx-swap="delete" hx-target="closest article">Delete</button>
+        </div>
+        <div>
+            <button class="contrast" hx-delete={{ contact.id }} hx-trigger="click" hx-swap="delete" hx-target="closest article">Delete</button>
         </div>
     </article>
     {% endfor %}
