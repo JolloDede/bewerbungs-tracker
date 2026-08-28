@@ -6,7 +6,6 @@ use axum::{
     response::{Html, Redirect},
 };
 use chrono::Utc;
-use entity::contact::Model as ContactModel;
 use entity::firma::Model as FirmaModel;
 use sea_orm::{ActiveValue::Set, EntityTrait, FromQueryResult};
 use serde::{Deserialize, Serialize};

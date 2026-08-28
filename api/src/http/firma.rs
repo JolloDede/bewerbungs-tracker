@@ -1,4 +1,4 @@
-use std::{fmt::Debug, time::SystemTime};
+use std::fmt::Debug;
 
 use askama::Template;
 use axum::{
@@ -7,7 +7,7 @@ use axum::{
     http::StatusCode,
     response::{Html, Redirect},
 };
-use chrono::{NaiveDate, NaiveDateTime, Utc};
+use chrono::Utc;
 use entity::firma::Model as FirmaModel;
 use sea_orm::{ActiveValue::Set, EntityTrait};
 use serde::{Deserialize, Serialize};
@@ -33,6 +33,8 @@ struct FirmaFormTemplate {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PostFirma {
     name: String,
+    plzort: String,
+    stellenbezeichnung: String,
     text: String,
     urls: String,
 }
@@ -48,10 +50,11 @@ pub async fn post_firma(
     let firma = entity::firma::ActiveModel {
         id: Set(uid),
         name: Set(form.name),
+        plzort: Set(form.plzort),
+        stellenbezeichung: Set(form.stellenbezeichnung),
         text: Set(form.text),
         urls: Set(form.urls),
         create_at: Set(created_at),
-        ..Default::default()
     };
 
     let res = entity::firma::Entity::insert(firma).exec(&state.db).await;

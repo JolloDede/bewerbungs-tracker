@@ -22,24 +22,20 @@
             {% endmatch %}
     </label>
     <label>
-        <span>Text:</span>
-        <textarea name="text" id="text">
-            {% match firma %}
-                {% when Some with (val) %}
-                    value={{ val.text }}
-                {% when None %}
-            {% endmatch %}
-        </textarea>
+        <span>Stellenbezeichnung:</span>
+        <input type="text" name="stellenbezeichnung" id="stellenbezeichnung">
+    </label>
+    <label>
+        <span>PLZ Ort:</span>
+        <input type="text" name="plzort" id="plzort">
     </label>
     <label>
         <span>Urls:</span>
-        <textarea name="urls" id="urls">
-            {% match firma %}
-                {% when Some with (val) %}
-                    value={{ val.urls }}
-                {% when None %}
-            {% endmatch %}
-        </textarea>
+        <textarea name="urls" id="urls" placeholder="Link zum Online Formular&#10;Firmenwebsite" rows="4">{% match firma %}{% when Some with (val) %}value={{ val.urls }}{% when None %}{% endmatch %}</textarea>
+    </label>
+    <label>
+        <span>Text:</span>
+        <textarea name="text" id="text" rows="4">{% match firma %}{% when Some with (val) %}value={{ val.text }}{% when None %}{% endmatch %}</textarea>
     </label>
 
     <button type="submit">Speichern</button>
