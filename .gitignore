@@ -5,3 +5,5 @@ tmp
 # Added by cargo
 
 /target
+
+db.sqlite
