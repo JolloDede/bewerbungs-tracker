@@ -12,7 +12,7 @@
             <h3 style="margin-top: 0;">{{ contact.status }}</h3>
         </div>
         <div>
-            <button class="contrast" hx-delete={{ contact.id }} hx-trigger="click" hx-swap="delete" hx-target="closest article">Delete</button>
+            <button class="contrast" hx-delete="contact/{{ contact.id }}" hx-trigger="click" hx-swap="delete" hx-target="closest article">Delete</button>
         </div>
     </article>
     {% endfor %}

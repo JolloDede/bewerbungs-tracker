@@ -1,10 +1,6 @@
-use askama::Template;
 use axum::{
     Router,
-    extract::State,
-    http::StatusCode,
-    response::Html,
-    routing::{get, post},
+    routing::{delete, get},
 };
 use migration::{Migrator, MigratorTrait};
 use sea_orm::{ConnectOptions, Database, DatabaseConnection};
@@ -39,6 +35,7 @@ async fn start() -> anyhow::Result<()> {
         .route("/firma/{id}", get(get_firma))
         .route("/contacts", get(get_contact_list))
         .route("/contact/add", get(get_contact_form).post(post_contact))
+        .route("/contact/{id}", delete(delete_contact))
         .nest_service("/assets/", ServeDir::new(assets))
         .with_state(app_state);
 

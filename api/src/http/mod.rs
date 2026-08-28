@@ -1,12 +1,13 @@
 use askama::Template;
 use axum::{extract::State, http::StatusCode, response::Html};
 use sea_orm::{FromQueryResult, Statement};
-use sqlx::types::chrono::{NaiveDate, Utc};
+use sqlx::types::chrono::{NaiveDateTime, Utc};
 
 mod firma;
 pub use firma::*;
 mod contact;
 pub use contact::*;
+use strum::IntoEnumIterator;
 use uuid::Uuid;
 
 use crate::AppState;
@@ -15,35 +16,61 @@ use crate::AppState;
 struct DisplayContact {
     firma_id: Uuid,
     firma: String,
-    date: NaiveDate,
+    date: NaiveDateTime,
     r#type: String,
     age: u32,
 }
 
 pub async fn index(state: State<AppState>) -> Result<Html<String>, (StatusCode, &'static str)> {
-    let mut d_contacts = DisplayContact::find_by_statement(
-        Statement::from_string(sea_orm::DatabaseBackend::Sqlite,
-            r#"
-           	SELECT f.id as firma_id, f.name as firma, c.date, c.type, 0 as age FROM firma f LEFT JOIN (
-                SELECT fk_firma, MAX(date) as max_date FROM contact GROUP BY fk_firma
-            ) latest_contact ON f.id = latest_contact.fk_firma
-            INNER JOIN contact c ON c.fk_firma = latest_contact.fk_firma AND c.date = latest_contact.max_date
-            WHERE c.Type != 'absage'
-            ORDER BY c.date ASC;
+    let mut d_contacts = DisplayContact::find_by_statement(Statement::from_string(
+        sea_orm::DatabaseBackend::Sqlite,
+        r#"
+            WITH RankedContacts AS (
+                SELECT
+                    f.id AS firma_id,
+                    f.name AS firma,
+                    c.date,
+                    c.type,
+                    ROW_NUMBER() OVER (PARTITION BY f.id ORDER BY c.date DESC) AS rn
+                FROM firma f
+                LEFT JOIN contact c ON f.id = c.fk_firma
+            )
+            SELECT firma_id, firma, date, type, 0 AS age
+            FROM RankedContacts
+            WHERE rn = 1
+              AND (type != 'absage' OR type IS NULL)
+            ORDER BY date ASC;
         "#,
-        )
-    ).all(&state.db)
+    ))
+    .all(&state.db)
     .await
-    .map_err(|err| {dbg!(err); (StatusCode::INTERNAL_SERVER_ERROR, "Failed to load contacts")})?;
+    .map_err(|err| {
+        dbg!(err);
+        (StatusCode::INTERNAL_SERVER_ERROR, "Failed to load contacts")
+    })?;
 
     let today = Utc::now().date_naive();
     for contact in d_contacts.iter_mut() {
-        let age = contact.date.signed_duration_since(today).num_days().abs() as u32;
+        let age = contact
+            .date
+            .date()
+            .signed_duration_since(today)
+            .num_days()
+            .unsigned_abs() as u32;
         contact.age = age;
+    }
+
+    let mut types = Vec::new();
+    for typ in ContactType::iter() {
+        types.push(ContactKV {
+            key: typ.as_ref().to_string(),
+            value: typ.as_ref().to_string(),
+        });
     }
 
     let index = IndexTemplate {
         contacts: d_contacts,
+        types: types,
     };
     let res = index
         .render()
@@ -56,4 +83,5 @@ pub async fn index(state: State<AppState>) -> Result<Html<String>, (StatusCode, 
 #[template(path = "index.html")]
 struct IndexTemplate {
     contacts: Vec<DisplayContact>,
+    types: Vec<ContactKV>,
 }

@@ -1,16 +1,17 @@
 use askama::Template;
 use axum::{
     Form,
-    extract::State,
+    extract::{Path, State},
     http::StatusCode,
     response::{Html, Redirect},
 };
 use chrono::Utc;
 use entity::firma::Model as FirmaModel;
-use sea_orm::{ActiveValue::Set, EntityTrait, FromQueryResult};
+use sea_orm::{ActiveValue::Set, EntityTrait, FromQueryResult, QueryOrder};
 use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 use strum_macros::{AsRefStr, EnumIter, EnumString};
+use uuid::Uuid;
 
 use crate::AppState;
 
@@ -57,9 +58,9 @@ pub enum ContactType {
     Absage,
 }
 
-struct ContactKV {
-    key: String,
-    value: String,
+pub struct ContactKV {
+    pub key: String,
+    pub value: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -74,7 +75,7 @@ pub async fn post_contact(
 ) -> Result<Redirect, (StatusCode, &'static str)> {
     let form = form.0;
     let uid = uuid::Uuid::now_v7();
-    let created_at = Utc::now().date_naive();
+    let created_at = Utc::now().naive_utc();
     let firma = uuid::Uuid::parse_str(form.firma.as_str()).map_err(|_| {
         (
             StatusCode::INTERNAL_SERVER_ERROR,
@@ -108,6 +109,7 @@ pub async fn get_contact_list(
 ) -> Result<Html<String>, (StatusCode, &'static str)> {
     let contacts = entity::contact::Entity::find()
         .find_also_related(entity::firma::Entity)
+        .order_by_desc(entity::contact::Column::Date)
         .all(&state.db)
         .await
         .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Failed to load firmas!"))?;
@@ -144,4 +146,18 @@ struct DisplayListContact {
     firma: String,
     date: String,
     status: String,
+}
+
+pub async fn delete_contact(Path(id): Path<String>, state: State<AppState>) -> StatusCode {
+    let Ok(uuid) = Uuid::parse_str(id.as_str()) else {
+        return StatusCode::NOT_FOUND;
+    };
+    let Ok(res) = entity::contact::Entity::delete_by_id(uuid)
+        .exec(&state.db)
+        .await
+    else {
+        return StatusCode::NOT_FOUND;
+    };
+
+    StatusCode::OK
 }

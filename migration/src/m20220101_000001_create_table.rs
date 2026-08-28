@@ -1,5 +1,7 @@
 use sea_orm_migration::{prelude::*, schema::*};
 
+use crate::FK_CONTACT_FIRMA;
+
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -55,8 +57,6 @@ impl MigrationTrait for Migration {
         Ok(())
     }
 }
-
-const FK_CONTACT_FIRMA: &str = "fk_contact_firma";
 
 #[derive(DeriveIden)]
 enum Firma {

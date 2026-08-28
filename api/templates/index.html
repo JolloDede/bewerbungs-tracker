@@ -25,7 +25,14 @@
                 >
                     {{ contact.date }}
                 </td>
-                <td>{{ contact.type }}</td>
+                <td>
+                    <input type="text" name="firma" id="firma" value={{ contact.firma_id }} style="display: none;">
+                    <select name="typ" id="typ" hx-post="contact/add" hx-include="#firma" hx-on::after-request="window.location.reload()">
+                        {% for typ in types %}
+                        <option value={{ typ.key }} {% if typ.value == contact.type %}selected{% endif %}>{{ typ.value }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

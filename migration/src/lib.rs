@@ -14,3 +14,5 @@ impl MigratorTrait for Migrator {
         ]
     }
 }
+
+pub const FK_CONTACT_FIRMA: &str = "fk_contact_firma";

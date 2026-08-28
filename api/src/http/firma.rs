@@ -11,7 +11,7 @@ use chrono::Utc;
 use entity::firma::Model as FirmaModel;
 use sea_orm::{ActiveValue::Set, EntityTrait};
 use serde::{Deserialize, Serialize};
-use uuid::{Uuid, uuid};
+use uuid::Uuid;
 
 use crate::{AppState, http::ContactType};
 
@@ -64,7 +64,7 @@ pub async fn post_firma(
         Ok(_res) => {
             let contact = entity::contact::ActiveModel {
                 id: Set(uuid::Uuid::now_v7()),
-                date: Set(Utc::now().date_naive()),
+                date: Set(Utc::now().naive_utc()),
                 r#type: Set(ContactType::Erfasst.as_ref().to_string()),
                 fk_firma: Set(uid),
                 ..Default::default()
