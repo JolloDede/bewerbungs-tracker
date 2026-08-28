@@ -223,3 +223,14 @@ label > span {
 textarea {
     field-sizing: content;
 }
+
+article.firma {
+    display: flex;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    padding: 4px 8px;
+}
+
+.firma > div:first-child {
+    flex-grow: 1;
+}

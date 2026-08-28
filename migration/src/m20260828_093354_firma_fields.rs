@@ -19,10 +19,12 @@ impl MigrationTrait for Migration {
             .alter_table(
                 Table::alter()
                     .table(Firma::Table)
-                    .add_column(string(Firma::Stellenbezeichung).not_null().default(""))
+                    .add_column(string(Firma::Stellenbezeichnung).not_null().default(""))
                     .to_owned(),
             )
-            .await
+            .await?;
+
+        Ok(())
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
@@ -39,7 +41,7 @@ impl MigrationTrait for Migration {
             .alter_table(
                 Table::alter()
                     .table(Firma::Table)
-                    .drop_column(Firma::Stellenbezeichung)
+                    .drop_column(Firma::Stellenbezeichnung)
                     .to_owned(),
             )
             .await?;
@@ -52,5 +54,5 @@ impl MigrationTrait for Migration {
 enum Firma {
     Table,
     Plzort,
-    Stellenbezeichung,
+    Stellenbezeichnung,
 }

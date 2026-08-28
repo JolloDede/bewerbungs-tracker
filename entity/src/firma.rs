@@ -13,7 +13,7 @@ pub struct Model {
     pub text: String,
     pub create_at: DateTime,
     pub plzort: String,
-    pub stellenbezeichung: String,
+    pub stellenbezeichnung: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

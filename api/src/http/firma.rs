@@ -3,7 +3,7 @@ use std::fmt::Debug;
 use askama::Template;
 use axum::{
     Form,
-    extract::State,
+    extract::{Path, State},
     http::StatusCode,
     response::{Html, Redirect},
 };
@@ -11,6 +11,7 @@ use chrono::Utc;
 use entity::firma::Model as FirmaModel;
 use sea_orm::{ActiveValue::Set, EntityTrait};
 use serde::{Deserialize, Serialize};
+use uuid::{Uuid, uuid};
 
 use crate::{AppState, http::ContactType};
 
@@ -51,7 +52,7 @@ pub async fn post_firma(
         id: Set(uid),
         name: Set(form.name),
         plzort: Set(form.plzort),
-        stellenbezeichung: Set(form.stellenbezeichnung),
+        stellenbezeichnung: Set(form.stellenbezeichnung),
         text: Set(form.text),
         urls: Set(form.urls),
         create_at: Set(created_at),
@@ -107,4 +108,24 @@ pub async fn get_firma_list(
 #[template(path = "firma_list.html")]
 struct FirmaListTemplate {
     firmas: Vec<FirmaModel>,
+}
+
+pub async fn get_firma(
+    Path(id): Path<String>,
+    state: State<AppState>,
+) -> Result<Html<String>, (StatusCode, &'static str)> {
+    let Ok(uuid) = Uuid::parse_str(id.as_str()) else {
+        return Err((StatusCode::NOT_FOUND, "Havent found firma with this id"));
+    };
+    let Ok(Some(res)) = entity::firma::Entity::find_by_id(uuid).one(&state.db).await else {
+        return Err((StatusCode::NOT_FOUND, "Havent found firma with this id"));
+    };
+
+    let firma_temp = FirmaFormTemplate { firma: Some(res) };
+
+    let res = firma_temp
+        .render()
+        .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Template error"))?;
+
+    Ok(Html(res))
 }

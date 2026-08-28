@@ -5,12 +5,14 @@
 {% block content %}
 <div>
     {% for firma in firmas %}
-    <article>
-        <details>
-            <summary role="button" class="outline">{{ firma.name }}</summary>
-            <p>{{ firma.text }}</p>
+    <article class="firma">
+        <div style: "flex-grow: 1;">
+            <h3>{{ firma.name }}</h3>
+            <p role="button" class="outline">{{ firma.text }}</p>
+        </div>
+        <div>
             <button onclick="window.location.href = '/firma/{{ firma.id }}'">Edit</button>
-        </details>
+        </div>
     </article>
     {% endfor %}
 </div>

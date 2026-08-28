@@ -20,22 +20,35 @@
                     value={{ val.name }}
                 {% when None %}
             {% endmatch %}
+        >
     </label>
     <label>
         <span>Stellenbezeichnung:</span>
-        <input type="text" name="stellenbezeichnung" id="stellenbezeichnung">
+        <input type="text" name="stellenbezeichnung" id="stellenbezeichnung"
+            {% match firma %}
+                {% when Some with (val) %}
+                    value={{ val.stellenbezeichnung }}
+                {% when None %}
+            {% endmatch %}
+        >
     </label>
     <label>
         <span>PLZ Ort:</span>
-        <input type="text" name="plzort" id="plzort">
+        <input type="text" name="plzort" id="plzort"
+            {% match firma %}
+                {% when Some with (val) %}
+                    value={{ val.plzort}}
+                {% when None %}
+            {% endmatch %}
+        >
     </label>
     <label>
         <span>Urls:</span>
-        <textarea name="urls" id="urls" placeholder="Link zum Online Formular&#10;Firmenwebsite" rows="4">{% match firma %}{% when Some with (val) %}value={{ val.urls }}{% when None %}{% endmatch %}</textarea>
+        <textarea name="urls" id="urls" placeholder="Link zum Online Formular&#10;Firmenwebsite" rows="4">{% match firma %}{% when Some with (val) %}{{ val.urls }}{% when None %}{% endmatch %}</textarea>
     </label>
     <label>
         <span>Text:</span>
-        <textarea name="text" id="text" rows="4">{% match firma %}{% when Some with (val) %}value={{ val.text }}{% when None %}{% endmatch %}</textarea>
+        <textarea name="text" id="text" rows="4">{% match firma %}{% when Some with (val) %}{{ val.text }}{% when None %}{% endmatch %}</textarea>
     </label>
 
     <button type="submit">Speichern</button>
