@@ -60,6 +60,23 @@ cargo build --release
 
 The release binary is written to `target/release/bewerbungs_tool`.
 
+To build a ZIP bundle for a 64-bit ARM Raspberry Pi:
+
+```sh
+nix build .#aarch64
+```
+
+Copy the resulting `result` file to the Raspberry Pi, extract it, and start
+the application:
+
+```sh
+unzip result
+./run.sh
+```
+
+The Raspberry Pi must be running a 64-bit ARM Linux system. If it uses Nix,
+you can also build the bundle directly there with the same command.
+
 ## Database migrations
 
 Migration commands and the workflow for creating a migration are documented in

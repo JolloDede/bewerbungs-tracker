@@ -25,7 +25,9 @@ async fn start() -> anyhow::Result<()> {
 
     let app_state = AppState { db: db };
 
-    let assets = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("assets");
+    let assets = std::env::var_os("BEWERBUNGS_TOOL_ASSETS")
+        .map(std::path::PathBuf::from)
+        .unwrap_or_else(|| std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("assets"));
 
     // build our application with a route
     let app = Router::new()
@@ -39,9 +41,11 @@ async fn start() -> anyhow::Result<()> {
         .nest_service("/assets/", ServeDir::new(assets))
         .with_state(app_state);
 
-    println!("Running on: http://localhost:3000");
-    // run our app with hyper, listening globally on port 3000
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    let port = std::env::var("PORT").unwrap_or("3000".to_string());
+    println!("Running on: http://localhost:{}", &port);
+    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", &port))
+        .await
+        .unwrap();
     axum::serve(listener, app).await?;
 
     Ok(())

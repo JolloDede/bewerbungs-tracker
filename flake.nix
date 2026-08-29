@@ -34,6 +34,8 @@
                   "rust-analyzer"
                   "clippy"
                 ];
+                targets = [
+                ];
               })
               pkg-config
               pkgs.lldb
@@ -41,6 +43,9 @@
               pkgs.just
 
               pkgs.sea-orm-cli
+             # Test
+              pkgs.cacert
+              pkgs.curl
             ];
             RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
             RUST_BACKTRACE = 1;
@@ -90,6 +95,26 @@
               WorkingDir = "/";
             };
           };
+
+          aarch64 =
+            let
+              staticPkgs = pkgs.pkgsCross.aarch64-multiplatform.pkgsStatic;
+              rustAarch64 = pkgs.rust-bin.stable.latest.default.override {
+                targets = [ "aarch64-unknown-linux-musl" ];
+              };
+            in
+            staticPkgs.rustPlatform.buildRustPackage {
+              pname = "bewerbungs_tool";
+              version = "0.1.0";
+              src = ./.;
+              cargoLock.lockFile = ./Cargo.lock;
+              cargo = rustAarch64;
+              rustc = rustAarch64;
+
+              postInstall = ''
+                cp -r api/assets $out/bin/assets
+              '';
+            };
 
           default = dockerImage;
         };
