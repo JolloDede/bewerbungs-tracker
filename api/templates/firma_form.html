@@ -17,7 +17,7 @@
         <input autofocus type="text" name="name" id="name"
             {% match firma %}
                 {% when Some with (val) %}
-                    value={{ val.name }}
+                    value="{{ val.name }}"
                 {% when None %}
             {% endmatch %}
         >
@@ -37,7 +37,7 @@
         <input type="text" name="plzort" id="plzort"
             {% match firma %}
                 {% when Some with (val) %}
-                    value={{ val.plzort}}
+                    value="{{ val.plzort}}"
                 {% when None %}
             {% endmatch %}
         >
