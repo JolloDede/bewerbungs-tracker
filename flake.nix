@@ -43,6 +43,7 @@
               pkgs.just
 
               pkgs.sea-orm-cli
+              pkgs.sqlite
              # Test
               pkgs.cacert
               pkgs.curl

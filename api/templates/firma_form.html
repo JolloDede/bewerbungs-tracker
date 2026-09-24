@@ -27,7 +27,7 @@
         <input type="text" name="stellenbezeichnung" id="stellenbezeichnung"
             {% match firma %}
                 {% when Some with (val) %}
-                    value={{ val.stellenbezeichnung }}
+                    value="{{ val.stellenbezeichnung }}"
                 {% when None %}
             {% endmatch %}
         >
