@@ -68,9 +68,11 @@ pub async fn index(state: State<AppState>) -> Result<Html<String>, (StatusCode, 
         });
     }
 
+    let firma_count = d_contacts.iter().count();
     let index = IndexTemplate {
         contacts: d_contacts,
         types: types,
+        firma_count,
     };
     let res = index
         .render()
@@ -84,4 +86,5 @@ pub async fn index(state: State<AppState>) -> Result<Html<String>, (StatusCode, 
 struct IndexTemplate {
     contacts: Vec<DisplayContact>,
     types: Vec<ContactKV>,
+    firma_count: usize,
 }
