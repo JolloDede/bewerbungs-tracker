@@ -15,7 +15,7 @@
         <tbody>
             {% for contact in contacts %}
             <tr >
-                <th scope="row">{{ contact.firma }}</th>
+                <th scope="row"><a href="/firma/{{ contact.firma_id }}">{{ contact.firma }}</a></th>
                 <td
                     {% if contact.age >= 14 %}
                         style="background-color: red;"
