@@ -17,9 +17,9 @@
             <tr >
                 <th scope="row">{{ contact.firma }}</th>
                 <td
-                    {% if contact.age == 2 %}
+                    {% if contact.age >= 14 %}
                         style="background-color: red;"
-                    {% else if contact.age == 1 %}
+                    {% else if contact.age >= 7 && contact.age < 14 %}
                         style="background-color: yellow;"
                     {% endif %}
                 >
