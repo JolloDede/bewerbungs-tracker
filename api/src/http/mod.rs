@@ -38,7 +38,7 @@ pub async fn index(state: State<AppState>) -> Result<Html<String>, (StatusCode, 
             SELECT firma_id, firma, date, type, 0 AS age
             FROM RankedContacts
             WHERE rn = 1
-              AND (type != 'absage' OR type IS NULL)
+              AND (NOT(type LIKE 'absage') OR type IS NULL)
             ORDER BY date ASC;
         "#,
     ))
