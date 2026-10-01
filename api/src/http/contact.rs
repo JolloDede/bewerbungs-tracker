@@ -1,4 +1,3 @@
-use askama::Template;
 use axum::{
     Form,
     extract::{Path, State},
@@ -18,36 +17,37 @@ use crate::AppState;
 pub async fn get_contact_form(
     state: State<AppState>,
 ) -> Result<Html<String>, (StatusCode, &'static str)> {
-    let firmas = entity::prelude::Firma::find()
-        .all(&state.db)
-        .await
-        .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Failed to load firmas!"))?;
-    let mut types = Vec::new();
-    for typ in ContactType::iter() {
-        types.push(ContactKV {
-            key: typ.as_ref().to_string(),
-            value: typ.as_ref().to_string(),
-        });
-    }
+    // let firmas = entity::prelude::Firma::find()
+    //     .all(&state.db)
+    //     .await
+    //     .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Failed to load firmas!"))?;
+    // let mut types = Vec::new();
+    // for typ in ContactType::iter() {
+    //     types.push(ContactKV {
+    //         key: typ.as_ref().to_string(),
+    //         value: typ.as_ref().to_string(),
+    //     });
+    // }
 
-    let contact_template = ContactFormTemplate {
-        firmas: firmas,
-        types: types,
-    };
+    // let contact_template = ContactFormTemplate {
+    //     firmas: firmas,
+    //     types: types,
+    // };
 
-    let res = contact_template
-        .render()
-        .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Template error"))?;
+    // let res = contact_template
+    //     .render()
+    //     .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Template error"))?;
 
-    Ok(Html(res))
+    // Ok(Html(res))
+    Err((StatusCode::NOT_IMPLEMENTED, "not yet implemented"))
 }
 
-#[derive(Template)]
-#[template(path = "contact_form.html")]
-struct ContactFormTemplate {
-    firmas: Vec<FirmaModel>,
-    types: Vec<ContactKV>,
-}
+// #[derive(Template)]
+// #[template(path = "contact_form.html")]
+// struct ContactFormTemplate {
+//     firmas: Vec<FirmaModel>,
+//     types: Vec<ContactKV>,
+// }
 
 #[derive(EnumIter, EnumString, AsRefStr)]
 pub enum ContactType {
@@ -107,38 +107,39 @@ pub async fn post_contact(
 pub async fn get_contact_list(
     state: State<AppState>,
 ) -> Result<Html<String>, (StatusCode, &'static str)> {
-    let contacts = entity::contact::Entity::find()
-        .find_also_related(entity::firma::Entity)
-        .order_by_desc(entity::contact::Column::Date)
-        .all(&state.db)
-        .await
-        .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Failed to load firmas!"))?;
+    // let contacts = entity::contact::Entity::find()
+    //     .find_also_related(entity::firma::Entity)
+    //     .order_by_desc(entity::contact::Column::Date)
+    //     .all(&state.db)
+    //     .await
+    //     .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Failed to load firmas!"))?;
 
-    let mut disp_contact = Vec::new();
-    for contact in contacts {
-        disp_contact.push(DisplayListContact {
-            id: contact.0.id.to_string(),
-            firma: contact.1.unwrap().name,
-            date: contact.0.date.to_string(),
-            status: contact.0.r#type,
-        });
-    }
+    // let mut disp_contact = Vec::new();
+    // for contact in contacts {
+    //     disp_contact.push(DisplayListContact {
+    //         id: contact.0.id.to_string(),
+    //         firma: contact.1.unwrap().name,
+    //         date: contact.0.date.to_string(),
+    //         status: contact.0.r#type,
+    //     });
+    // }
 
-    let firma_temp = ContactListTemplate {
-        contacts: disp_contact,
-    };
-    let res = firma_temp
-        .render()
-        .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Template error"))?;
+    // let firma_temp = ContactListTemplate {
+    //     contacts: disp_contact,
+    // };
+    // let res = firma_temp
+    //     .render()
+    //     .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Template error"))?;
 
-    Ok(Html(res))
+    // Ok(Html(res))
+    Err((StatusCode::NOT_IMPLEMENTED, "not yet implemented"))
 }
 
-#[derive(Template)]
-#[template(path = "contact_list.html")]
-struct ContactListTemplate {
-    contacts: Vec<DisplayListContact>,
-}
+// #[derive(Template)]
+// #[template(path = "contact_list.html")]
+// struct ContactListTemplate {
+//     contacts: Vec<DisplayListContact>,
+// }
 
 #[derive(FromQueryResult)]
 struct DisplayListContact {
@@ -152,7 +153,7 @@ pub async fn delete_contact(Path(id): Path<String>, state: State<AppState>) -> S
     let Ok(uuid) = Uuid::parse_str(id.as_str()) else {
         return StatusCode::NOT_FOUND;
     };
-    let Ok(res) = entity::contact::Entity::delete_by_id(uuid)
+    let Ok(_) = entity::contact::Entity::delete_by_id(uuid)
         .exec(&state.db)
         .await
     else {
