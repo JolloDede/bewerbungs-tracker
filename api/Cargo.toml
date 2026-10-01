@@ -19,4 +19,4 @@ uuid = {version = "1.23.1", features = ["v7"] }
 strum = "0.28.0"
 strum_macros = "0.28.0"
 rip_templating = { version = "0.2.3", features = ["axum"] }
-rip_templating_macro = "0.3.3"
+rip_templating_macro = "0.3.4"

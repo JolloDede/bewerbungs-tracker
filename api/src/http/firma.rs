@@ -7,22 +7,94 @@ use axum::{
     response::{Html, Redirect},
 };
 use chrono::Utc;
-use entity::firma::Model as FirmaModel;
+use rip_templating::html;
 use sea_orm::{ActiveValue::Set, EntityTrait};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::{AppState, http::ContactType};
+use crate::{
+    AppState,
+    http::{ContactType, index_page, page_template},
+};
 
 pub async fn get_firma_form() -> Result<Html<String>, (StatusCode, &'static str)> {
-    // let firma_temp = FirmaFormTemplate { firma: None };
+    Ok(page_template("Firma Forma", firma_form(None).0))
+}
 
-    // let res = firma_temp
-    //     .render()
-    //     .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Template error"))?;
+fn firma_form(firma: Option<PostFirma>) -> Html<String> {
+    let (firma_name, stellen_bezeichnung, plzort) = match &firma {
+        Some(firma) => (
+            firma.name.clone(),
+            firma.stellenbezeichnung.clone(),
+            firma.plzort.clone(),
+        ),
+        None => ("".to_string(), "".to_string(), "".to_string()),
+    };
 
-    // Ok(Html(res))
-    Err((StatusCode::NOT_IMPLEMENTED, "not yet implemented"))
+    return html! {
+       form {
+           method: "POST",
+           h2 {
+               if let Some(firma) = &firma {
+                   {format!("Firma {} verändern", firma.name)}
+               } else {
+                    "Neue Firma erfassen"
+               }
+           }
+           label {
+               span { "Firmenname:" }
+               input {
+                   autofocus: true,
+                   r#type: "text",
+                   name: "name",
+                   id: "name",
+                   value: &firma_name,
+               }
+           }
+           label {
+               span { "Stellenbezeichnung:" }
+               input {
+                   r#type: "text",
+                   name: "stellenbezeichnung",
+                   id: "stellenbezeichnung",
+                   value: &stellen_bezeichnung,
+               }
+           }
+           label {
+               span { "PLZ Ort:" }
+               input {
+                   r#type: "text",
+                   name: "plzort",
+                   id: "plzort",
+                   value: &plzort,
+               }
+           }
+           label {
+               span { "Urls:" }
+               textarea {
+                   name: "urls",
+                   id: "urls",
+                   if let Some(firma) = &firma {
+                       {firma.urls}
+                   }
+               }
+           }
+           label {
+               span { "Text:" }
+               textarea {
+                   name: "text",
+                   id: "text",
+                   if let Some(firma) = &firma {
+                       {firma.text}
+                   }
+               }
+           }
+           button {
+               r#type: "submit",
+               "Speichern"
+           }
+       }
+    };
 }
 
 // #[derive(Template)]

@@ -110,13 +110,13 @@ pub fn page_template(title: &str, children: String) -> Html<String> {
                         ul {
                             li {
                                 button {
-                                    onclick: "window.localtion.push(\"/contact/add\"",
+                                    onclick: "window.location.href = \'/contact/add\'",
                                     "Kontakt hinzufügen"
                                 }
                             }
                             li {
                                 button {
-                                    onclick: "window.localtion.push(\"/firma/add\"",
+                                    onclick: "window.location.href = \'/firma/add\'",
                                     "Firma hinzufügen"
                                 }
                             }

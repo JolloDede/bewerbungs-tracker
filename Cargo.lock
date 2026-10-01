@@ -1786,9 +1786,9 @@ dependencies = [
 
 [[package]]
 name = "rip_templating_macro"
-version = "0.3.3"
+version = "0.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b3aadc3d1f28c34dd7df2db60feeb50c8326832713f92261f4fcbcde0f4b56f"
+checksum = "ad63d2fcbc82f577a5f3374c594896efc06c24995afbcdb93d08f17b3cc8f135"
 dependencies = [
  "proc-macro2",
  "quote",
