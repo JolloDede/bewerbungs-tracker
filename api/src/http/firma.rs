@@ -19,7 +19,7 @@ use crate::{
 };
 
 pub async fn get_firma_form() -> Result<Html<String>, (StatusCode, &'static str)> {
-    Ok(page_template("Firma", firma_form(None).0))
+    Ok(page_template("Firma formular", firma_form(None).0))
 }
 
 fn firma_form(firma: Option<FirmaModel>) -> Html<String> {
