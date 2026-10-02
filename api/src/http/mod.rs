@@ -1,5 +1,5 @@
 use axum::{extract::State, http::StatusCode, response::Html};
-use rip_templating::{Component, DOCTYPE, html};
+use rip_templating::{DOCTYPE, html};
 use sea_orm::{FromQueryResult, Statement};
 use sqlx::types::chrono::{NaiveDateTime, Utc};
 
@@ -8,6 +8,7 @@ pub use firma::*;
 mod contact;
 pub use contact::*;
 use strum::IntoEnumIterator;
+use tracing::debug;
 use uuid::Uuid;
 
 use crate::AppState;

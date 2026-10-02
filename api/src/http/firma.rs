@@ -3,8 +3,8 @@ use std::fmt::Debug;
 use axum::{
     Form,
     extract::{Path, State},
-    http::StatusCode,
-    response::{Html, Redirect},
+    http::{HeaderMap, StatusCode},
+    response::{Html, IntoResponse, Redirect},
 };
 use chrono::Utc;
 use entity::firma::Model as FirmaModel;
@@ -15,7 +15,7 @@ use uuid::Uuid;
 
 use crate::{
     AppState,
-    http::{ContactType, index_page, page_template},
+    http::{ContactType, page_template},
 };
 
 pub async fn get_firma_form() -> Result<Html<String>, (StatusCode, &'static str)> {
@@ -31,71 +31,100 @@ fn firma_form(firma: Option<FirmaModel>) -> Html<String> {
         ),
         None => ("".to_string(), "".to_string(), "".to_string()),
     };
-
-    return html! {
-       form {
-           method: if firma.is_some() { "PUT" } else { "POST" },
-           h2 {
-               if let Some(firma) = &firma {
-                   {format!("Firma {} verändern", firma.name)}
-               } else {
-                    "Neue Firma erfassen"
-               }
-           }
-           label {
-               span { "Firmenname:" }
-               input {
-                   autofocus: true,
-                   r#type: "text",
-                   name: "name",
-                   id: "name",
-                   value: &firma_name,
-               }
-           }
-           label {
-               span { "Stellenbezeichnung:" }
-               input {
-                   r#type: "text",
-                   name: "stellenbezeichnung",
-                   id: "stellenbezeichnung",
-                   value: &stellen_bezeichnung,
-               }
-           }
-           label {
-               span { "PLZ Ort:" }
-               input {
-                   r#type: "text",
-                   name: "plzort",
-                   id: "plzort",
-                   value: &plzort,
-               }
-           }
-           label {
-               span { "Urls:" }
-               textarea {
-                   name: "urls",
-                   id: "urls",
-                   if let Some(firma) = &firma {
-                       {firma.urls}
-                   }
-               }
-           }
-           label {
-               span { "Text:" }
-               textarea {
-                   name: "text",
-                   id: "text",
-                   if let Some(firma) = &firma {
-                       {firma.text}
-                   }
-               }
-           }
-           button {
-               r#type: "submit",
-               "Speichern"
-           }
-       }
+    let method = if firma.is_some() {
+        HttpMethod::Put
+    } else {
+        HttpMethod::Post
     };
+
+    return form_ele(
+        method,
+        html! {
+            h2 {
+                if let Some(firma) = &firma {
+                    {format!("Firma {} verändern", firma.name)}
+                } else {
+                     "Neue Firma erfassen"
+                }
+            }
+            label {
+                span { "Firmenname:" }
+                input {
+                    autofocus: true,
+                    r#type: "text",
+                    name: "name",
+                    id: "name",
+                    value: &firma_name,
+                }
+            }
+            label {
+                span { "Stellenbezeichnung:" }
+                input {
+                    r#type: "text",
+                    name: "stellenbezeichnung",
+                    id: "stellenbezeichnung",
+                    value: &stellen_bezeichnung,
+                }
+            }
+            label {
+                span { "PLZ Ort:" }
+                input {
+                    r#type: "text",
+                    name: "plzort",
+                    id: "plzort",
+                    value: &plzort,
+                }
+            }
+            label {
+                span { "Urls:" }
+                textarea {
+                    name: "urls",
+                    id: "urls",
+                    if let Some(firma) = &firma {
+                        {firma.urls}
+                    }
+                }
+            }
+            label {
+                span { "Text:" }
+                textarea {
+                    name: "text",
+                    id: "text",
+                    if let Some(firma) = &firma {
+                        {firma.text}
+                    }
+                }
+            }
+            button {
+                r#type: "submit",
+                "Speichern"
+            }
+        }
+        .0,
+    );
+}
+
+enum HttpMethod {
+    Post,
+    Put,
+}
+
+fn form_ele(method: HttpMethod, children: String) -> Html<String> {
+    match method {
+        HttpMethod::Post => html! {
+            form {
+                hx_post: "",
+                {children}
+            }
+        },
+        HttpMethod::Put => html! {
+            form {
+                hx_put: "",
+                hx_swap: "none",
+                {children}
+            }
+        },
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -155,6 +184,41 @@ pub async fn post_firma(
     }
 }
 
+pub async fn put_firma(
+    state: State<AppState>,
+    Path(id): Path<String>,
+    form: Form<PostFirma>,
+) -> Result<impl IntoResponse, (StatusCode, &'static str)> {
+    let form = form.0;
+    let Ok(firma_id) = uuid::Uuid::parse_str(&id) else {
+        return Err((StatusCode::INTERNAL_SERVER_ERROR, ""));
+    };
+
+    let firma = entity::firma::ActiveModel {
+        id: Set(firma_id),
+        name: Set(form.name),
+        plzort: Set(form.plzort),
+        stellenbezeichnung: Set(form.stellenbezeichnung),
+        text: Set(form.text),
+        urls: Set(form.urls),
+        ..Default::default()
+    };
+
+    let res = entity::firma::Entity::update(firma).exec(&state.db).await;
+
+    match res {
+        Ok(_res) => {
+            let mut headers = HeaderMap::new();
+            headers.insert("HX-Redirect", "/".parse().unwrap());
+            return Ok(headers);
+        }
+        Err(err) => {
+            dbg!(err);
+            Err((StatusCode::INTERNAL_SERVER_ERROR, ""))
+        }
+    }
+}
+
 pub async fn get_firma_list(
     state: State<AppState>,
 ) -> Result<Html<String>, (StatusCode, &'static str)> {
@@ -183,7 +247,7 @@ fn firma_list(firmas: Vec<FirmaModel>) -> Html<String> {
                    }
                    div {
                        button {
-                           onclick: "window.location.href = '/firma/{{ firma.id }}'",
+                           onclick: {format!("window.location.href = '/firma/{}'", firma.id.to_string())},
                            "Edit"
                        }
                    }
