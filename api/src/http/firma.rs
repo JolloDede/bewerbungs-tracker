@@ -7,6 +7,7 @@ use axum::{
     response::{Html, Redirect},
 };
 use chrono::Utc;
+use entity::firma::Model as FirmaModel;
 use rip_templating::html;
 use sea_orm::{ActiveValue::Set, EntityTrait};
 use serde::{Deserialize, Serialize};
@@ -18,10 +19,10 @@ use crate::{
 };
 
 pub async fn get_firma_form() -> Result<Html<String>, (StatusCode, &'static str)> {
-    Ok(page_template("Firma Forma", firma_form(None).0))
+    Ok(page_template("Firma", firma_form(None).0))
 }
 
-fn firma_form(firma: Option<PostFirma>) -> Html<String> {
+fn firma_form(firma: Option<FirmaModel>) -> Html<String> {
     let (firma_name, stellen_bezeichnung, plzort) = match &firma {
         Some(firma) => (
             firma.name.clone(),
@@ -33,7 +34,7 @@ fn firma_form(firma: Option<PostFirma>) -> Html<String> {
 
     return html! {
        form {
-           method: "POST",
+           method: if firma.is_some() { "PUT" } else { "POST" },
            h2 {
                if let Some(firma) = &firma {
                    {format!("Firma {} verändern", firma.name)}
@@ -97,12 +98,6 @@ fn firma_form(firma: Option<PostFirma>) -> Html<String> {
     };
 }
 
-// #[derive(Template)]
-// #[template(path = "firma_form.html")]
-// struct FirmaFormTemplate {
-//     firma: Option<FirmaModel>,
-// }
-
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PostFirma {
     name: String,
@@ -163,43 +158,51 @@ pub async fn post_firma(
 pub async fn get_firma_list(
     state: State<AppState>,
 ) -> Result<Html<String>, (StatusCode, &'static str)> {
-    // let firmas = entity::firma::Entity::find()
-    //     .all(&state.db)
-    //     .await
-    //     .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Failed to load firmas!"))?;
+    let firmas = entity::firma::Entity::find()
+        .all(&state.db)
+        .await
+        .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Failed to load firmas!"))?;
 
-    // let firma_temp = FirmaListTemplate { firmas: firmas };
-    // let res = firma_temp
-    //     .render()
-    //     .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Template error"))?;
-
-    // Ok(Html(res))
-    Err((StatusCode::NOT_IMPLEMENTED, "not yet implemented"))
+    Ok(page_template("Firma list", firma_list(firmas).0))
 }
 
-// #[derive(Template)]
-// #[template(path = "firma_list.html")]
-// struct FirmaListTemplate {
-//     firmas: Vec<FirmaModel>,
-// }
+fn firma_list(firmas: Vec<FirmaModel>) -> Html<String> {
+    html! {
+        div {
+            for firma in firmas {
+               article {
+                   class: "firma",
+                   div {
+                       style: "flex-grow: 1;",
+                       h3 { {firma.name} }
+                       p {
+                           role: "button",
+                           class: "outline",
+                           {firma.text}
+                       }
+                   }
+                   div {
+                       button {
+                           onclick: "window.location.href = '/firma/{{ firma.id }}'",
+                           "Edit"
+                       }
+                   }
+               }
+            }
+        }
+    }
+}
 
 pub async fn get_firma(
     Path(id): Path<String>,
     state: State<AppState>,
 ) -> Result<Html<String>, (StatusCode, &'static str)> {
-    // let Ok(uuid) = Uuid::parse_str(id.as_str()) else {
-    //     return Err((StatusCode::NOT_FOUND, "Havent found firma with this id"));
-    // };
-    // let Ok(Some(res)) = entity::firma::Entity::find_by_id(uuid).one(&state.db).await else {
-    //     return Err((StatusCode::NOT_FOUND, "Havent found firma with this id"));
-    // };
+    let Ok(uuid) = Uuid::parse_str(id.as_str()) else {
+        return Err((StatusCode::NOT_FOUND, "Havent found firma with this id"));
+    };
+    let Ok(Some(res)) = entity::firma::Entity::find_by_id(uuid).one(&state.db).await else {
+        return Err((StatusCode::NOT_FOUND, "Havent found firma with this id"));
+    };
 
-    // let firma_temp = FirmaFormTemplate { firma: Some(res) };
-
-    // let res = firma_temp
-    //     .render()
-    //     .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Template error"))?;
-
-    // Ok(Html(res))
-    Err((StatusCode::NOT_IMPLEMENTED, "not yet implemented"))
+    Ok(page_template("Firma", firma_form(Some(res)).0))
 }

@@ -34,7 +34,7 @@ async fn start() -> anyhow::Result<()> {
         .route("/", get(index))
         .route("/firmas", get(get_firma_list))
         .route("/firma/add", get(get_firma_form).post(post_firma))
-        .route("/firma/{id}", get(get_firma))
+        .route("/firma/{id}", get(get_firma)) // todo add put function to handle update to firma
         .route("/contacts", get(get_contact_list))
         .route("/contact/add", get(get_contact_form).post(post_contact))
         .route("/contact/{id}", delete(delete_contact))
